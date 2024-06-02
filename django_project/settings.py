@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "rest_framework",
     # local
     "main_app.apps.MainAppConfig",
+    "tenant_app.apps.TenantAppConfig",
 ]
 
 MIDDLEWARE = [
@@ -49,6 +50,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "main_app.middlewares.CurrentRequestMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -85,8 +87,12 @@ DATABASES = {
         "USER": "postgres",
         "PASSWORD": "42213",
         "PORT": "5432",
-    }
+        "AUTOMIC_REQUESTS": True,
+    },
 }
+
+
+DATABASE_ROUTERS = ["main_app.routers.CustomDatabaseRouter"]
 
 
 # Password validation
