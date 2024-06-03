@@ -37,8 +37,15 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
     # 3rd party
     "rest_framework",
+    "rest_framework.authtoken",
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
     # local
     "main_app.apps.MainAppConfig",
     "tenant_app.apps.TenantAppConfig",
@@ -50,8 +57,9 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "main_app.middlewares.CurrentRequestMiddleware",
+    # "main_app.middlewares.CurrentRequestMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
@@ -92,7 +100,7 @@ DATABASES = {
 }
 
 
-DATABASE_ROUTERS = ["main_app.routers.CustomDatabaseRouter"]
+# DATABASE_ROUTERS = ["main_app.routers.CustomDatabaseRouter"]
 
 
 # Password validation
@@ -137,3 +145,27 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "main_app.Tenant"
+
+
+# Rest Framework
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",
+    ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
+    ],
+}
+
+
+# allauth
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+SITE_ID = 1
+AUTHENTICATION_BACKENDS = ("allauth.account.auth_backends.AuthenticationBackend",)
+
+
+# dj-rest-auth
+REST_AUTH = {
+    "REGISTER_SERIALIZER": "main_app.serializers.CustomRegisterSerializer",
+}

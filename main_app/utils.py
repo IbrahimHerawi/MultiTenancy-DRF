@@ -19,7 +19,10 @@ def create_tenant_database(tenant):
     )
     connection.autocommit = True
     cursor = connection.cursor()
-    cursor.execute(f"CREATE DATABASE {tenant.subdomain}")
+    try:
+        cursor.execute(f"CREATE DATABASE {tenant.subdomain};")
+    except Exception as e:
+        print(f"error {e}")
     # cursor.execute(f"CREATE USER {tenant.username} WITH PASSWORD '{tenant.password}'")
     # cursor.execute(
     #     f"GRANT ALL PRIVILEGES ON DATABASE {tenant.subdomain} TO {tenant.username}"

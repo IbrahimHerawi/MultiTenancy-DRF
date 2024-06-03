@@ -39,10 +39,7 @@ class Tenant(AbstractBaseUser, PermissionsMixin):
     )
     username = models.CharField(unique=True, max_length=150)
     email = models.EmailField(unique=True)
-    facility_name = models.CharField(
-        unique=True,
-        max_length=250,
-    )
+    facility_name = models.CharField(max_length=100, null=True, blank=True)
     subdomain = models.CharField(max_length=100, unique=True)
     joined_at = models.DateTimeField(auto_now_add=True)
     is_staff = models.BooleanField(default=False)
