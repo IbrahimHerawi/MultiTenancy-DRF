@@ -7,11 +7,14 @@ class MainAppConfig(AppConfig):
     name = "main_app"
 
     def ready(self):
+        # signal to create database and migrate required apps
         import main_app.signals
+
+        # load all databases when the application is restarted
         from .models import Tenant
 
         for tenant in Tenant.objects.all():
-            connections.databases[tenant.subdomain] = {
+            connections.databases[f"{tenant.subdomain}"] = {
                 "ENGINE": "django.db.backends.postgresql",
                 "HOST": "localhost",
                 "NAME": f"{tenant.subdomain}",

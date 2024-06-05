@@ -1,29 +1,37 @@
+from django.db import connections
 from .utils import get_current_request
 
 
 class CustomDatabaseRouter:
+
+    # tenant specific apps
+    route_app_label = {
+        "tenant_app",
+    }
+
     def db_for_read(self, model, **hints):
         db_name = get_current_request()
         if db_name:
-            return "db_name"
+            if model._meta.app_label in self.route_app_label:
+                return db_name
         return "default"
 
     def db_for_write(self, model, **hints):
         db_name = get_current_request()
         if db_name:
-            return "db_name"
+            if model._meta.app_label in self.route_app_label:
+                return db_name
         return "default"
 
     def allow_relation(self, obj1, obj2, **hints):
-        # Allow any relation if both models are in the same database.
-        db_obj1 = hints.get("database", None)
-        db_obj2 = hints.get("database", None)
-        if db_obj1 and db_obj2:
-            return db_obj1 == db_obj2
+        db_name = get_current_request()
+        if db_name:
+            if obj1._state.db == db_name and obj2._state.db == db_name:
+                return True
         return None
 
     def allow_migrate(self, db, app_label, model_name=None, **hints):
-        # Allow migrations on all databases
+        # migrations on all databases
         return True
 
 

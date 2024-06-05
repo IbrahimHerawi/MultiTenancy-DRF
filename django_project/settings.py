@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-w3%id^&79%*#568#2zg#3c#o$2ncb$^@lsf60l*bu1ai!jeahe
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", ".localhost"]
 
 
 # Application definition
@@ -54,10 +54,10 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "main_app.middlewares.CurrentRequestMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    # "main_app.middlewares.CurrentRequestMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "allauth.account.middleware.AccountMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -100,7 +100,7 @@ DATABASES = {
 }
 
 
-# DATABASE_ROUTERS = ["main_app.routers.CustomDatabaseRouter"]
+DATABASE_ROUTERS = ["main_app.routers.CustomDatabaseRouter"]
 
 
 # Password validation

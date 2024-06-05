@@ -9,6 +9,7 @@ from django.core.management import call_command
 from django.conf import settings
 
 
+# create a database for every new tenant
 def create_tenant_database(tenant):
     connection = psycopg.connect(
         dbname=settings.DATABASES["default"]["NAME"],
@@ -30,10 +31,10 @@ def create_tenant_database(tenant):
     cursor.close()
     connection.close()
 
-    connections.databases[f"{tenant.subdomain}"] = {
+    connections.databases[tenant.subdomain] = {
         "ENGINE": "django.db.backends.postgresql",
         "HOST": "localhost",
-        "NAME": f"{tenant.subdomain}",
+        "NAME": tenant.subdomain,
         "USER": "postgres",
         "PASSWORD": "42213",
         "PORT": "5432",
@@ -46,6 +47,7 @@ def create_tenant_database(tenant):
     }
 
 
+# migrate tenant specific apps to tenant's database
 def apply_migrations_to_tenant(tenant):
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "django_project.settings")
     django.setup()
@@ -57,6 +59,7 @@ def apply_migrations_to_tenant(tenant):
         print(f"Error: {e}")
 
 
+# get and set the subdomain
 _thread_locals = threading.local()
 
 
@@ -65,4 +68,4 @@ def get_current_request():
 
 
 def set_current_request(db_name):
-    _thread_locals.db_name = db_name
+    _thread_locals.db_name = str(db_name)
