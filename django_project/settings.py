@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,12 +42,14 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     # 3rd party
     "rest_framework",
+    "rest_framework_simplejwt",
     "rest_framework.authtoken",
     "dj_rest_auth",
     "dj_rest_auth.registration",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    "corsheaders",
     # local
     "main_app.apps.MainAppConfig",
     "tenant_app.apps.TenantAppConfig",
@@ -54,13 +58,14 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "main_app.middlewares.CurrentRequestMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "allauth.account.middleware.AccountMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "main_app.middlewares.CurrentRequestMiddleware",
 ]
 
 ROOT_URLCONF = "django_project.urls"
@@ -153,8 +158,9 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.AllowAny",
     ],
     "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
         "rest_framework.authentication.SessionAuthentication",
-        "rest_framework.authentication.TokenAuthentication",
     ],
 }
 
@@ -163,9 +169,51 @@ REST_FRAMEWORK = {
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 SITE_ID = 1
 AUTHENTICATION_BACKENDS = ("allauth.account.auth_backends.AuthenticationBackend",)
-
+ACCOUNT_AUTHENTICATION_METHOD = "username_email"
 
 # dj-rest-auth
 REST_AUTH = {
     "REGISTER_SERIALIZER": "main_app.serializers.CustomRegisterSerializer",
+    "USE_JWT": True,
+    "JWT_AUTH_COOKIE": "user-auth",
+    "JWT_AUTH_REFRESH_COOKIE": "refresh-token",
+}
+
+
+# Domain
+SITE_DOMAIN = "localhost"
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "http://*.localhost:8000",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8000",
+    "http://*.localhost:8000",
+]
+# SESSION_COOKIE_DOMAIN = ".localhost"
+# CSRF_COOKIE_DOMAIN = ".localhost"
+
+
+# simplejwt
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": "your-secret-key",
+    "VERIFYING_KEY": None,
+    "AUDIENCE": None,
+    "ISSUER": None,
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "TOKEN_TYPE_CLAIM": "token_type",
+    "JTI_CLAIM": "jti",
+    "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
+    "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
+    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
 }

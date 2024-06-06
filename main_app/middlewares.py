@@ -1,4 +1,8 @@
 from .utils import set_current_request
+from rest_framework.authentication import TokenAuthentication
+from django.utils.deprecation import MiddlewareMixin
+from rest_framework.authtoken.models import Token
+from django.contrib.auth.models import AnonymousUser
 
 
 class CurrentRequestMiddleware:
