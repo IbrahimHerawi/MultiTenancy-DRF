@@ -21,10 +21,14 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    # main_app urls
     path("", include("main_app.urls")),
+    # registration and Authentication urls
     path("account/", include("dj_rest_auth.urls")),
-    path("signup/", include("dj_rest_auth.registration.urls")),
+    path("account/signup/", include("dj_rest_auth.registration.urls")),
+    # tenant_app urls
     path("employees/", include("tenant_app.urls")),
+    # JWT url
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 ]

@@ -1,10 +1,7 @@
 from .utils import set_current_request
-from rest_framework.authentication import TokenAuthentication
-from django.utils.deprecation import MiddlewareMixin
-from rest_framework.authtoken.models import Token
-from django.contrib.auth.models import AnonymousUser
 
 
+# extracting subdomin of the request to make it accessible by database router
 class CurrentRequestMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response

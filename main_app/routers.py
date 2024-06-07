@@ -2,6 +2,7 @@ from django.db import connections
 from .utils import get_current_request
 
 
+# router each database query to the subdomain related database
 class CustomDatabaseRouter:
 
     # tenant specific apps
@@ -33,27 +34,3 @@ class CustomDatabaseRouter:
     def allow_migrate(self, db, app_label, model_name=None, **hints):
         # migrations on all databases
         return True
-
-
-# class TenantRouter:
-#     def db_for_read(self, model, **hints):
-#         tenant = hints.get("tenant")
-#         if tenant:
-#             return tenant.subdomain
-#         return None
-
-#     def db_for_write(self, model, **hints):
-#         tenant = hints.get("tenant")
-#         if tenant:
-#             return tenant.subdomain
-#         return None
-
-#     def allow_relation(self, obj1, obj2, **hints):
-#         tenant = hints.get("tenant")
-#         if tenant:
-#             return tenant.subdomain == hints.get("tenant").subdomain
-#         return None
-
-#     def allow_migrate(self, db, app_label, model_name=None, **hints):
-#         # Ensure migrations only run on the default database
-#         return db == "default"

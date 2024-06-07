@@ -169,7 +169,10 @@ REST_FRAMEWORK = {
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 SITE_ID = 1
 AUTHENTICATION_BACKENDS = ("allauth.account.auth_backends.AuthenticationBackend",)
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_AUTHENTICATION_METHOD = "username_email"
+
 
 # dj-rest-auth
 REST_AUTH = {
@@ -192,8 +195,6 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8000",
     "http://*.localhost:8000",
 ]
-# SESSION_COOKIE_DOMAIN = ".localhost"
-# CSRF_COOKIE_DOMAIN = ".localhost"
 
 
 # simplejwt
